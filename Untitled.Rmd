@@ -1,0 +1,56 @@
+---
+title: "Project #1"
+author: "Luis R Esteves"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+library(jsonlite)
+library(tidyr)
+library(tidyverse)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(DT)
+```
+
+## **Introduction to JSON**
+
+
+### **What are JSON files?**
+
+JSON is short for **JavaScript Object Notation**. JSON format is a useful way to store information in an organized, and easy to read format. It can provide an easily readable collection of data which humans can interpret at a glance. You can check [this article out for more information on JSON files.](https://www.copterlabs.com/json-what-it-is-how-it-works-how-to-use-it/).
+
+JSON code itself exists as a string object. This proves to be useful when transmitting data across a network. For accessing this data, it must be converted to a native JavaScript object. The benefit to the use of JSON is for its ease of use within API functions and Web-oriented programming. 
+
+One interesting capability is for JSON datasets to be stored within themselves. So you could have a single JSON file with a single dataset. Or, you could have a single JSON file with multiple datasets within it. If interested in more specific details about how arrays and the innerworkings of JSON files function reference [this article.](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON) Lastly, [this article also feature a comparison of tools, and other data formats](https://www.impressivewebs.com/what-is-json-introduction-guide-for-beginners/) as well as more supplemental information. 
+
+### **Reading in JSON Datasets**
+
+For reading in JSON datasets we are going to make use of the `jsonlite` package. There are other packages such as `rjson`, but I've chosen to go through with the use of this package since there is a handy vignette available, as well as easy to use capabilities for dealing with JSON files. 
+
+Below we will start with reading in a JSON dataset to showcase how we can use the `jsonlite` package!
+
+The dataset we are working with is a report from the city of Chapel Hill, NC. It looks at crash incidents between bikers and drivers. It's collected by police officers that arrive at the scene and document the incident. There is a large array of data from, victim/perpetrator age, speed, location, damage assesment to bike/vehicle, and much more. Despite the wealth of information, for our example we will likely be trimming the data to use just a few datapoints. 
+
+```{r bikesdata, include=TRUE, message=FALSE, warning=FALSE}
+library(jsonlite)
+
+bikesData <- fromJSON("https://www.chapelhillopendata.org/api/v2/catalog/datasets/bicycle-crash-data-chapel-hill-region/exports/json")
+bikesData <- as_data_frame(bikesData)
+
+knitr::kable(bikesData[1:8,1:5], format="html")
+```
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Notice above that first we must reference the library `library(jsonlite)`, then we'd gain access to the package and all its capabilities. We read in the data using our `fromJSON()` function, this simply reads in any data that is formated in the JSON style. Here we are reading it directly from text on an html page online. 
+
+The `fromJSON()` function has a lot of capabilities when it comes to the arguments that can be passed within it. You could simply reference a JSON file or text to transform the data, but there is more that can be achieved. It can coerce vectors, dataframes, or matrices for more straightforward use in R. You can also parse through the data to seek out specific snippets of information from the original JSON file or text. 
+
+After that I simply converted the JSON data into a dataframe for use and printed a small snippet of some of the information we have available. 
+
