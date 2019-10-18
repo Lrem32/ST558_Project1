@@ -1517,11 +1517,22 @@ div.tocify {
 <p>JSON code itself exists as a string object. This proves to be useful when transmitting data across a network. For accessing this data, it must be converted to a native JavaScript object. The benefit to the use of JSON is for its ease of use within API functions and Web-oriented programming.</p>
 <p>One interesting capability is for JSON datasets to be stored within themselves. So you could have a single JSON file with a single dataset. Or, you could have a single JSON file with multiple datasets within it. If interested in more specific details about how arrays and the innerworkings of JSON files function reference <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON">this article.</a> Lastly, <a href="https://www.impressivewebs.com/what-is-json-introduction-guide-for-beginners/">this article also feature a comparison of tools, and other data formats</a> as well as more supplemental information.</p>
 </div>
-<div id="reading-in-json-datasets" class="section level3">
-<h3><strong>Reading in JSON Datasets</strong></h3>
+</div>
+<div id="reading-in-json-datasets" class="section level2">
+<h2><strong>Reading in JSON Datasets</strong></h2>
 <p>For reading in JSON datasets we are going to make use of the <code>jsonlite</code> package. There are other packages such as <code>rjson</code>, but I’ve chosen to go through with the use of this package since there is a handy vignette available, as well as easy to use capabilities for dealing with JSON files.</p>
 <p>Below we will start with reading in a JSON dataset to showcase how we can use the <code>jsonlite</code> package!</p>
 <p>The dataset we are working with is a report from the city of Chapel Hill, NC. It looks at crash incidents between bikers and drivers. It’s collected by police officers that arrive at the scene and document the incident. There is a large array of data from, victim/perpetrator age, speed, location, damage assesment to bike/vehicle, and much more. Despite the wealth of information, for our example we will likely be trimming the data to use just a few datapoints.</p>
+<hr />
+<div id="getting-started-with-jsonlite" class="section level3">
+<h3><strong>Getting Started with <code>jsonlite</code></strong></h3>
+<p>First off ensure that you have installed the package within R as such:</p>
+<p><code>install.packages(&quot;jsonlite&quot;)</code></p>
+<p>And reference the package with the <code>library()</code> call.</p>
+<p><code>library(jsonlite)</code></p>
+<p>We read in the data using our <code>fromJSON()</code> function, this simply reads in any data that is formated in the JSON style. Here we are reading it directly from text on an html page online.</p>
+<p>The <code>fromJSON()</code> function has a lot of capabilities when it comes to the arguments that can be passed within it. You could simply reference a JSON file or text to transform the data, but there is more that can be achieved. It can coerce vectors, dataframes, or matrices for more straightforward use in R. You can also parse through the data to seek out specific snippets of information from the original JSON file or text.</p>
+<p>After having read in the data, I simply converted the JSON data into a dataframe for use and printed a small snippet of some of the information we have available.</p>
 <pre class="r"><code>library(jsonlite)
 
 bikesData &lt;- fromJSON(&quot;https://www.chapelhillopendata.org/api/v2/catalog/datasets/bicycle-crash-data-chapel-hill-region/exports/json&quot;)
@@ -1688,10 +1699,229 @@ Dry
 </tbody>
 </table>
 <hr />
-<p>Notice above that first we must reference the library <code>library(jsonlite)</code>, then we’d gain access to the package and all its capabilities. We read in the data using our <code>fromJSON()</code> function, this simply reads in any data that is formated in the JSON style. Here we are reading it directly from text on an html page online.</p>
-<p>The <code>fromJSON()</code> function has a lot of capabilities when it comes to the arguments that can be passed within it. You could simply reference a JSON file or text to transform the data, but there is more that can be achieved. It can coerce vectors, dataframes, or matrices for more straightforward use in R. You can also parse through the data to seek out specific snippets of information from the original JSON file or text.</p>
-<p>After that I simply converted the JSON data into a dataframe for use and printed a small snippet of some of the information we have available.</p>
-<p>Next we are going to trim down the data to prepare for use.</p>
+<p>Given that there is a lot of supplemental data that we are not interested in using, lets go ahead and clean up some of it and prepare it for use.</p>
+<p>We are going to select specific rows below, and then rename them to make our data more understandable.</p>
+<pre class="r"><code>subBikeData &lt;- bikesData[ ,c(1,3,4,7,8,23,22,41,26,28,42)]
+titles &lt;- c(&quot;Ambulance&quot;,  &quot;Crash Severity&quot;, &quot;Road Conditions&quot;, &quot;County&quot;, &quot;Month&quot;, &quot;Driver Injury&quot;, &quot;Biker Age&quot;, &quot;Driver Age&quot;, &quot;Driver Intoxicated&quot;, &quot;Light Conditions&quot;, &quot;Weather Conditions&quot;)
+
+names(subBikeData) &lt;- titles
+knitr::kable(subBikeData[1:5, ], format=&quot;html&quot;)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Ambulance
+</th>
+<th style="text-align:left;">
+Crash Severity
+</th>
+<th style="text-align:left;">
+Road Conditions
+</th>
+<th style="text-align:left;">
+County
+</th>
+<th style="text-align:left;">
+Month
+</th>
+<th style="text-align:left;">
+Driver Injury
+</th>
+<th style="text-align:left;">
+Biker Age
+</th>
+<th style="text-align:left;">
+Driver Age
+</th>
+<th style="text-align:left;">
+Driver Intoxicated
+</th>
+<th style="text-align:left;">
+Light Conditions
+</th>
+<th style="text-align:left;">
+Weather Conditions
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:left;">
+K: Killed
+</td>
+<td style="text-align:left;">
+Dry
+</td>
+<td style="text-align:left;">
+Orange
+</td>
+<td style="text-align:left;">
+July
+</td>
+<td style="text-align:left;">
+O: No Injury
+</td>
+<td style="text-align:left;">
+70+
+</td>
+<td style="text-align:left;">
+70+
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:left;">
+Daylight
+</td>
+<td style="text-align:left;">
+Clear
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:left;">
+C: Possible Injury
+</td>
+<td style="text-align:left;">
+Dry
+</td>
+<td style="text-align:left;">
+Orange
+</td>
+<td style="text-align:left;">
+February
+</td>
+<td style="text-align:left;">
+Unknown Injury
+</td>
+<td style="text-align:left;">
+24
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Missing
+</td>
+<td style="text-align:left;">
+Daylight
+</td>
+<td style="text-align:left;">
+Clear
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:left;">
+B: Evident Injury
+</td>
+<td style="text-align:left;">
+Dry
+</td>
+<td style="text-align:left;">
+Durham
+</td>
+<td style="text-align:left;">
+February
+</td>
+<td style="text-align:left;">
+Unknown Injury
+</td>
+<td style="text-align:left;">
+26
+</td>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:left;">
+Missing
+</td>
+<td style="text-align:left;">
+Dark - Roadway Not Lighted
+</td>
+<td style="text-align:left;">
+Clear
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:left;">
+B: Evident Injury
+</td>
+<td style="text-align:left;">
+Dry
+</td>
+<td style="text-align:left;">
+Orange
+</td>
+<td style="text-align:left;">
+December
+</td>
+<td style="text-align:left;">
+O: No Injury
+</td>
+<td style="text-align:left;">
+33
+</td>
+<td style="text-align:left;">
+70+
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:left;">
+Daylight
+</td>
+<td style="text-align:left;">
+Clear
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:left;">
+B: Evident Injury
+</td>
+<td style="text-align:left;">
+Dry
+</td>
+<td style="text-align:left;">
+Durham
+</td>
+<td style="text-align:left;">
+September
+</td>
+<td style="text-align:left;">
+O: No Injury
+</td>
+<td style="text-align:left;">
+41
+</td>
+<td style="text-align:left;">
+70+
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:left;">
+Daylight
+</td>
+<td style="text-align:left;">
+Clear
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
