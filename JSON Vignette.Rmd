@@ -29,7 +29,7 @@ JSON code itself exists as a string object. This proves to be useful when transm
 
 One interesting capability is for JSON datasets to be stored within themselves. So you could have a single JSON file with a single dataset. Or, you could have a single JSON file with multiple datasets within it. If interested in more specific details about how arrays and the innerworkings of JSON files function reference [this article.](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON) Lastly, [this article also feature a comparison of tools, and other data formats](https://www.impressivewebs.com/what-is-json-introduction-guide-for-beginners/) as well as more supplemental information. 
 
-### **Reading in JSON Datasets**
+## **Reading in JSON Datasets**
 
 For reading in JSON datasets we are going to make use of the `jsonlite` package. There are other packages such as `rjson`, but I've chosen to go through with the use of this package since there is a handy vignette available, as well as easy to use capabilities for dealing with JSON files. 
 
@@ -37,6 +37,24 @@ Below we will start with reading in a JSON dataset to showcase how we can use th
 
 The dataset we are working with is a report from the city of Chapel Hill, NC. It looks at crash incidents between bikers and drivers. It's collected by police officers that arrive at the scene and document the incident. There is a large array of data from, victim/perpetrator age, speed, location, damage assesment to bike/vehicle, and much more. Despite the wealth of information, for our example we will likely be trimming the data to use just a few datapoints. 
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+### **Getting Started with `jsonlite`**
+
+First off ensure that you have installed the package within R as such:
+
+`install.packages("jsonlite")`
+
+And reference the package with the `library()` call. 
+
+`library(jsonlite)`
+
+We read in the data using our `fromJSON()` function, this simply reads in any data that is formated in the JSON style. Here we are reading it directly from text on an html page online. 
+
+The `fromJSON()` function has a lot of capabilities when it comes to the arguments that can be passed within it. You could simply reference a JSON file or text to transform the data, but there is more that can be achieved. It can coerce vectors, dataframes, or matrices for more straightforward use in R. You can also parse through the data to seek out specific snippets of information from the original JSON file or text. 
+
+After having read in the data, I simply converted the JSON data into a dataframe for use and printed a small snippet of some of the information we have available. 
 ```{r bikesdata, include=TRUE, message=FALSE, warning=FALSE}
 library(jsonlite)
 
@@ -48,11 +66,16 @@ knitr::kable(bikesData[1:8,1:5], format="html")
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Notice above that first we must reference the library `library(jsonlite)`, then we'd gain access to the package and all its capabilities. We read in the data using our `fromJSON()` function, this simply reads in any data that is formated in the JSON style. Here we are reading it directly from text on an html page online. 
+Given that there is a lot of supplemental data that we are not interested in using, lets go ahead and clean up some of it and prepare it for use. 
 
-The `fromJSON()` function has a lot of capabilities when it comes to the arguments that can be passed within it. You could simply reference a JSON file or text to transform the data, but there is more that can be achieved. It can coerce vectors, dataframes, or matrices for more straightforward use in R. You can also parse through the data to seek out specific snippets of information from the original JSON file or text. 
+We are going to select specific rows below, and then rename them to make our data more understandable. 
 
-After that I simply converted the JSON data into a dataframe for use and printed a small snippet of some of the information we have available.
 
-Next we are going to trim down the data to prepare for use. 
+```{r cleanup, include=TRUE, message=FALSE, warning=FALSE}
+subBikeData <- bikesData[ ,c(1,3,4,7,8,23,22,41,26,28,42)]
+titles <- c("Ambulance",  "Crash Severity", "Road Conditions", "County", "Month", "Driver Injury", "Biker Age", "Driver Age", "Driver Intoxicated", "Light Conditions", "Weather Conditions")
+
+names(subBikeData) <- titles
+knitr::kable(subBikeData[1:5, ], format="html")
+```
 
