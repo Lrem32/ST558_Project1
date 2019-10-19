@@ -73,9 +73,44 @@ We are going to select specific rows below, and then rename them to make our dat
 
 ```{r cleanup, include=TRUE, message=FALSE, warning=FALSE}
 subBikeData <- bikesData[ ,c(1,3,4,7,8,23,22,41,26,28,42)]
-titles <- c("Ambulance",  "Crash Severity", "Road Conditions", "County", "Month", "Driver Injury", "Biker Age", "Driver Age", "Driver Intoxicated", "Light Conditions", "Weather Conditions")
+titles <- c("Ambulance",  "Severity", "Road", "County", "Month", "Driver Injury", "Biker", "Driver", "Intoxicated", "Light", "Weather")
 
 names(subBikeData) <- titles
 knitr::kable(subBikeData[1:5, ], format="html")
 ```
 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### **Data Visulization**
+
+Now that we've organized our data as we'd like it. We are going to implement some graphics to plot out some information. First we need to ensure we revert all ages to numeric from character. 
+
+```{r function, include=TRUE, message=FALSE, warning=FALSE}
+
+subBikeData$`Biker` <- as.numeric(subBikeData$`Biker`)
+subBikeData$`Driver` <- as.numeric(subBikeData$`Driver`)
+
+finalData <- na.omit(subBikeData)
+
+```
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Now we can begin plotting using our `ggplot2` package! 
+
+First we'll vizualize them noths to see which ones are more prone to crashes. Then we will see the weather data, and then plot age of biker vs age of driver. 
+
+```{r plotting, include=TRUE, message=FALSE, warning=FALSE}
+
+gplot1 <- ggplot(data = finalData, aes(x=Month)) + geom_bar() + labs(x ="Crashes per Month")
+gplot1
+
+gplot2 <- ggplot(data = finalData, aes(x=Weather)) + geom_bar() + labs(x ="Daytime Conditions")
+gplot2
+
+g1 <- ggplot(finalData, aes(x = Month, y=Driver)) + geom_boxplot(fill="white") + labs(x = "Months", title = "Boxplot Driver Age") + geom_point(aes(position = "jitter"))
+g1
+
+                                                                                                                                                               
+```
