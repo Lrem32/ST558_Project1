@@ -1,30 +1,36 @@
 ---
-title: "XML Vignette"
+title: "Project #1"
 author: "Luis R Esteves"
-date: "10/18/2019"
-output: html_document
+output:
+  html_document:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(jsonlite)
+library(tidyr)
+library(tidyverse)
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(DT)
+library(XML)
 ```
 
-## R Markdown
+## **Introduction to XML**
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+### **What are XML files?**
 
-```{r cars}
-summary(cars)
+"XML is a markup language that was created by the World Wide WEb Consortium (W3C) to define a syntax for encoding document that both humans and machines could read." In this sense XMl can be considered similar to JSON, since both languages can be interpreted pretty easily by humans. It's very similar to HTML in terms of its stylings. Unlike HTML, XML is a bit more pliable and the use can even create their own markup symbols to describe content. Where HTML is a language that focuses on the presentation of content, XML would be dedicated to data-description for data storage. 
+
+
+```{r read_in, include=TRUE, message=FALSE}
+
+x <-xmlParse("rows.xml")
+rootNode <- xmlRoot(x)
+data <- xmlSApply(rootNode, function(x) xmlSApply(x, xmlValue))
+data2 <- data.frame(t(data), row.names=NULL)
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
